@@ -7,29 +7,50 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <form method="GET" action="{{ route('admin.books') }}" class="mb-4">
-                    <label for="kategori" class="block text-sm font-medium text-gray-700">Filter Kategori:</label>
-                    <select name="kategori" id="kategori" class="mt-1 block w-full" style="width:100px">
-                        <option value="">All Categories</option>
-                        <option value="fiksi" {{ request('kategori') === 'fiksi' ? 'selected' : '' }}>Fiksi</option>
-                        <option value="sains" {{ request('kategori') === 'sains' ? 'selected' : '' }}>Science</option>
-                        <option value="novel" {{ request('kategori') === 'novel' ? 'selected' : '' }}>Novel</option>
-                        <option value="dongeng" {{ request('kategori') === 'dongeng' ? 'selected' : '' }}>Dongeng</option>
-                        <option value="biografi" {{ request('kategori') === 'biografi' ? 'selected' : '' }}>Biografi</option>
-                    </select>
-                    <button type="submit" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Filter</button>
-                </form>
-                
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg" style="padding: 15px">
+
+                <!-- Dropdown Button -->
+                <button id="dropdownButton" data-dropdown-toggle="dropdown" class="text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" type="button">
+                    Filter Kategori
+                    <svg class="ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6" style="width: 12px; height: 12px;">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
+                        <li>
+                            <a href="{{ route('admin.books') }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">All Categories</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.books', ['kategori' => 'fiksi']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Fiksi</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.books', ['kategori' => 'sains']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Science</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.books', ['kategori' => 'novel']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Novel</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.books', ['kategori' => 'dongeng']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dongeng</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.books', ['kategori' => 'biografi']) }}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Biografi</a>
+                        </li>
+                    </ul>
+                </div>
+                <br>
+
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3">Judul</th>
-                                <th scope="col" class="px-6 py-3">Deskripsi</th>
-                                <th scope="col" class="px-6 py-3">Jumlah</th>
-                                <th scope="col" class="px-6 py-3">Kategori</th>
-                                <th scope="col" class="px-6 py-3">Gambar</th>
+                                <th scope="col" class="px-6 py-3">Book Title</th>
+                                <th scope="col" class="px-6 py-3">Description</th>
+                                <th scope="col" class="px-6 py-3">Quantity</th>
+                                <th scope="col" class="px-6 py-3">Categories</th>
+                                <th scope="col" class="px-6 py-3">Covers</th>
                                 <th scope="col" class="px-6 py-3">File</th>
                                 <th scope="col" class="px-6 py-3">Actions</th>
                             </tr>
@@ -62,10 +83,30 @@
                         </tbody>
                     </table>
                 </div>
-                
 
                 {{ $books->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for Dropdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdown');
+
+            if (dropdownButton && dropdownMenu) {
+                dropdownButton.addEventListener('click', () => {
+                    dropdownMenu.classList.toggle('hidden');
+                });
+
+                // Close the dropdown if clicked outside
+                document.addEventListener('click', (event) => {
+                    if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                        dropdownMenu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>
